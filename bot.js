@@ -1,4 +1,3 @@
-// bot.js
 const fs = require("fs");
 const {
   Client,
@@ -32,7 +31,6 @@ client.once("ready", async () => {
   try {
     const savedMessageId = await getOrCreateServerMessage(client, config);
 
-    // Интервал обновления — 20 секунд
     setInterval(async () => {
       try {
         const serverInfo = await getArma3ServerInfo(config);
