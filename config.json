@@ -1,0 +1,94 @@
+{
+  "BotToken": "",
+  "CommandsPrefix": "?",
+  "BotStatusGame": "Server Online: ",
+  "TS3adres": "",
+  "BotStatusUpdateInterval": 10,
+  "BotStatusServerDisabled": "Выключен",
+  "ServerAdress": "",
+  "ServerGamePort": ,
+  "YourChannelId": "",
+  "ServerImageURL": "",
+  "AutorName": "Phoenix Project | Arma 3 SWRP",
+  "AutorURLavatar": "",
+  "PlayerOrganizationMappings": [
+  {
+    "tag": "[HQ]",
+    "name": "**Штабные Офицеры**",
+    "priority": 1,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[RS]",
+    "name": "**1-й Республиканский Батальон**",
+    "priority": 2,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[502]",
+    "name": "**502-й Орбитально-Десантный Батальон**",
+    "priority": 3,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[327]",
+    "name": "**327-й Звëздный Батальон**",
+    "priority": 4,
+    "ansiColor": "0;32"
+  }, 
+  {
+    "tag": "[104]",
+    "name": "**104-й Моторизованно-Артиллерийский Батальон**",
+    "priority": 5,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[77th]",
+    "name": "**77-й Военно-Звëздная Эскадрилья**",
+    "priority": 6,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[ARC]",
+    "name": "**Advanced Recon Commando [ARC]**",
+    "priority": 7,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[ARF]",
+    "name": "**Advanced Recon Force [ARF]**",
+    "priority": 8,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "[RC]",
+    "name": "**Republic Commando [RC]**",
+    "priority": 9,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "CR",
+    "name": "**Клоны-Рекруты**",
+    "priority": 10,
+    "ansiColor": "0;32"
+  },
+  {
+    "tag": "JP",
+    "name": "**Орден Джедаев**",
+    "priority": 11,
+    "ansiColor": "0;32"
+  }, 
+  {
+    "tag": "JK",
+    "name": "**Орден Джедаев**",
+    "priority": 11,
+    "ansiColor": "0;32"
+  }, 
+  {
+    "tag": "JM",
+    "name": "**Орден Джедаев**",
+    "priority": 11,
+    "ansiColor": "0;32"
+  }
+]
+}
