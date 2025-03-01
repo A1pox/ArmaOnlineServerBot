@@ -1,11 +1,7 @@
-// functions.js
 const { EmbedBuilder } = require("discord.js");
 const fs = require("fs");
-// Если вы видите ошибку "Gamedig.query is not a function", 
-// попробуйте вместо require("gamedig") использовать require("gamedig").default
 const Gamedig = require("gamedig");
 
-// Читаем из serverMessageId.txt
 function loadServerMessageId() {
   try {
     const data = fs.readFileSync("serverMessageId.txt", "utf8");
@@ -16,7 +12,6 @@ function loadServerMessageId() {
   }
 }
 
-// Записываем в serverMessageId.txt
 function saveServerMessageId(messageId) {
   try {
     fs.writeFileSync("serverMessageId.txt", messageId);
@@ -25,7 +20,6 @@ function saveServerMessageId(messageId) {
   }
 }
 
-// Запрашиваем информацию о сервере Arma 3
 async function getArma3ServerInfo(config) {
   console.log("Getting Arma 3 server info...");
   try {
@@ -42,7 +36,6 @@ async function getArma3ServerInfo(config) {
   }
 }
 
-// Определяем организацию игрока: если ник содержит mapping.tag — подходит.
 function getPlayerOrganization(playerName, mappings) {
   let bestMatch = null;
   for (const mapping of mappings) {
@@ -55,23 +48,15 @@ function getPlayerOrganization(playerName, mappings) {
   return bestMatch;
 }
 
-/**
- * Создаёт Embed с информацией о сервере.
- * - В полях (название, карта, ... ) текст выводится в код-бэктиках `...`.
- * - Группы игроков выводятся в ```ansi ...``` с использованием ANSI-цветов.
- */
 function createServerInfoEmbed(serverInfo, organizationMappings, config) {
   const embed = new EmbedBuilder();
 
-  // Автор
   const authorName = config.AutorName || "Неизвестно";
   const authorAvatar = config.AutorURLavatar || "";
   embed.setAuthor({ name: authorName, iconURL: authorAvatar });
 
-  // Заголовок
   embed.setTitle("Общая информация");
 
-  // 1) Название сервера
   const serverName = serverInfo?.name || "Неизвестно";
   embed.addFields({
     name: "Название сервера Arma",
@@ -79,7 +64,6 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
     inline: true
   });
 
-  // 2) Прямое подключение
   const connectInfo = serverInfo?.connect || "undefined:undefined";
   embed.addFields({
     name: "Прямое подключение",
@@ -87,7 +71,6 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
     inline: true
   });
 
-  // 3) Адрес TS3
   const ts3Address = config.TS3adres || "shkilafon.ts3.re";
   embed.addFields({
     name: "Адрес [TS3]",
@@ -95,16 +78,14 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
     inline: true
   });
 
-  // 4) Статус
   const playersCount = serverInfo?.players?.length || 0;
-  const isOnline = playersCount > 0 ? "✅ Онлайн" : "❌ Сдох";
+  const isOnline = playersCount > 0 ? "✅ Онлайн" : "✅ Онлайн";
   embed.addFields({
     name: "Статус сервера",
     value: `\`${isOnline}\``,
     inline: true
   });
 
-  // 5) Игроки онлайн
   const maxPlayers = serverInfo?.maxplayers || 0;
   embed.addFields({
     name: "Игроки онлайн",
@@ -112,7 +93,6 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
     inline: true
   });
 
-  // 6) Карта
   const mapName = serverInfo?.map || "Неизвестно";
   embed.addFields({
     name: "Карта на сервере",
@@ -120,37 +100,25 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
     inline: true
   });
 
-  // Цвет Embed и время
   embed.setColor("#00ff00");
   embed.setTimestamp();
 
-  // 7) Если кто-то играет — группируем по организациям
   if (playersCount > 0) {
-    // orgGroups будет: { "НАЗВАНИЕ_ГРУППЫ": [ {orgData, playerName}, ... ], ... }
     const orgGroups = {};
 
     for (const player of serverInfo.players) {
       const foundOrg = getPlayerOrganization(player.name, organizationMappings);
-      // Если ничего не нашлось, создадим заглушку
       const orgName = foundOrg ? foundOrg.name : "Неизвестно";
       if (!orgGroups[orgName]) {
         orgGroups[orgName] = [];
       }
-      // Сохраняем инфу об ansi-цвете, нике и т. д.
       orgGroups[orgName].push({
-        ansiColor: foundOrg?.ansiColor || "0;37", // белый, если не указано
+        ansiColor: foundOrg?.ansiColor || "0;37",
         playerName: player.name
       });
     }
 
-    // Выводим каждую группу отдельным Embed-полем
-    for (const orgName in orgGroups) {
-      // Собираем всех игроков в один code-block
-      // Пример: 
-      // ```ansi
-      // \u001b[0;31mPlayer1\u001b[0m
-      // \u001b[0;31mPlayer2\u001b[0m
-      // ```
+    for (const orgName in orgGroups) {`
       let blockLines = "";
       orgGroups[orgName].forEach(({ ansiColor, playerName }) => {
         blockLines += `\u001b[${ansiColor}m${playerName}\u001b[0m\n`;
@@ -162,7 +130,7 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
         "```";
 
       embed.addFields({
-        name: orgName,      // "Бойцы класса ARF" и т.п.
+        name: orgName,
         value: codeBlock,
         inline: false
       });
@@ -172,10 +140,6 @@ function createServerInfoEmbed(serverInfo, organizationMappings, config) {
   return embed;
 }
 
-/**
- * Если serverMessageId.txt пуст — создаём новое сообщение на канале и сохраняем ID.
- * Иначе — возвращаем уже сохранённое.
- */
 async function getOrCreateServerMessage(client, config) {
   console.log("Attempting to get or create server message...");
 
@@ -197,9 +161,6 @@ async function getOrCreateServerMessage(client, config) {
   return messageId;
 }
 
-/**
- * Редактируем (обновляем) существующее сообщение новым Embed
- */
 async function updateServerMessage(client, config, messageId) {
   console.log("Updating server message...");
   try {
@@ -217,7 +178,6 @@ async function updateServerMessage(client, config, messageId) {
   }
 }
 
-// Экспортируем функции
 module.exports = {
   getOrCreateServerMessage,
   updateServerMessage,
